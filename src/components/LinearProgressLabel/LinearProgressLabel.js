@@ -9,7 +9,9 @@ const LinearProgressLabel = ({ progress, value }) => {
         variant="determinate"
         value={value}
       />
-      <p style={{ display: "inline-block" }}> {Math.round(progress)} % </p>
+      <p style={{ display: "inline-block", marginLeft: "10px" }}>
+        {Math.round(progress)} %
+      </p>
     </div>
   );
 };

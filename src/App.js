@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@material-ui/core";
 import { bubbleSort } from "./utils/sort";
 import LinearProgressLabel from "./components/LinearProgressLabel/LinearProgressLabel";
+import SortDropDown from "./components/SortDropDown/SortDropDown";
 
 const App = () => {
   const generateRandomValues = (num) => {
@@ -13,6 +14,10 @@ const App = () => {
         y: Math.floor(Math.random() * 100),
       };
     });
+  };
+
+  const handleSortChange = (event, value) => {
+    setSortMethod(event.target.value);
   };
 
   const handleChange = (event, value) => {
@@ -30,14 +35,19 @@ const App = () => {
   const [speed, setSpeed] = useState(0.7);
   const [color, setColor] = useState("lightBlue");
   const [sorting, setSorting] = useState(false);
+  const [sortMethod, setSortMethod] = useState(0);
+  //0 is BubbleSort, 1 is MergeSort, 2 is SelectionSort, 3 is InsertionSort
 
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
+  const callSortMethod = () => {};
   return (
     <div>
+      <SortDropDown handleChange={handleSortChange}></SortDropDown>
       <Graph color={color} key="graphData" data={randomData} />
       <RandomSlider handleChange={handleChange} />
       <Button
+        style={{ marginLeft: "50px" }}
         variant="contained"
         color="primary"
         onClick={async () => {

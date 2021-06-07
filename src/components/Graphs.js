@@ -2,8 +2,8 @@ import { VerticalBarSeries, XYPlot } from "react-vis";
 
 const Graph = ({ color, data }) => {
   return (
-    <div>
-      <XYPlot height={200} width={200}>
+    <div style={{ marginLeft: "25px" }}>
+      <XYPlot height={250} width={275}>
         <VerticalBarSeries color={color} data={data} />
       </XYPlot>
     </div>

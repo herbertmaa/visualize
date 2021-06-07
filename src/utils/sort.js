@@ -23,4 +23,5 @@ const bubbleSort = async (original) => {
   return answers;
 };
 
-export { bubbleSort };
+const mergeSort = async (original) => {};
+export { bubbleSort, mergeSort };
