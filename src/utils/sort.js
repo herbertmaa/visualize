@@ -28,19 +28,24 @@ const mergeSort = (original) => {
     const n1 = m - l + 1;
     const n2 = r - m;
 
+    const copy = JSON.parse(JSON.stringify(arr));
+
     // Create temp arrays
     const L = [];
     const R = [];
 
     // Copy data to temp arrays L[] and R[]
-    for (let i = 0; i < n1; i++) L[i] = arr[l + i];
-    for (let j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+    for (let i = 0; i < n1; i++) {
+      L[i] = copy[l + i];
+    }
+    for (let j = 0; j < n2; j++) {
+      R[j] = copy[m + 1 + j];
+    }
 
     let leftIndex = 0;
     let rightIndex = 0;
     let k = l;
 
-    console.log("Merging", n1, n2);
     while (leftIndex < n1 && rightIndex < n2) {
       if (L[leftIndex]["y"] < R[rightIndex]["y"]) {
         arr[k]["y"] = L[leftIndex]["y"];
@@ -64,20 +69,17 @@ const mergeSort = (original) => {
       k++;
     }
 
-    console.log("Length of array", arr.length, k);
     answers.push(JSON.parse(JSON.stringify(arr)));
   };
   const sorter = (arr, l, r, answers) => {
-    if (l >= r) {
-      return;
+    if (l < r) {
+      const m = Math.floor((l + r) / 2);
+      sorter(arr, l, m, answers);
+      sorter(arr, m + 1, r, answers);
+      mergeHelper(arr, l, m, r, answers);
     }
-    const m = l + parseInt((r - l) / 2);
-    sorter(arr, l, m, answers);
-    sorter(arr, m + 1, r, answers);
-    mergeHelper(arr, l, m, r, answers);
   };
 
-  console.log("original", JSON.parse(JSON.stringify(original)));
   let arr = JSON.parse(JSON.stringify(original));
   let answers = [];
 
@@ -122,7 +124,6 @@ const selectionSort = (original) => {
     }
     sortedIndex++;
   }
-  console.log(answers);
   return answers;
 };
 
