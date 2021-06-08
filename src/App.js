@@ -2,7 +2,12 @@ import Graph from "./components/Graphs";
 import RandomSlider from "./components/RandomSlider/RandomSlider";
 import React, { useState } from "react";
 import { Button } from "@material-ui/core";
-import { bubbleSort } from "./utils/sort";
+import {
+  bubbleSort,
+  mergeSort,
+  selectionSort,
+  insertionSort,
+} from "./utils/sort";
 import LinearProgressLabel from "./components/LinearProgressLabel/LinearProgressLabel";
 import SortDropDown from "./components/SortDropDown/SortDropDown";
 
@@ -40,7 +45,20 @@ const App = () => {
 
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
-  const callSortMethod = () => {};
+  const callSortMethod = () => {
+    switch (sortMethod) {
+      case 0:
+        return bubbleSort(randomData);
+      case 1:
+        return mergeSort(randomData);
+      case 2:
+        return selectionSort(randomData);
+      case 3:
+        return insertionSort(randomData);
+      default:
+        return [];
+    }
+  };
   return (
     <div>
       <SortDropDown handleChange={handleSortChange}></SortDropDown>
@@ -53,7 +71,7 @@ const App = () => {
         onClick={async () => {
           if (sorting) return; // already sorting
           setSorting(true);
-          const changes = await bubbleSort(randomData);
+          const changes = await callSortMethod();
           const percentageChange = 100 / changes.length;
           for (let i = 0; i < changes.length; ++i) {
             setRandomValues([...changes[i]]);
