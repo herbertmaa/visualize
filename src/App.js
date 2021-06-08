@@ -21,27 +21,37 @@ const App = () => {
     });
   };
 
-  const handleSortChange = (event, value) => {
-    setSortMethod(event.target.value);
-  };
-
   const handleChange = (event, value) => {
     if (value === numValues) return;
     setNumber(value);
     setProgress(0);
-    setRandomValues(generateRandomValues(value));
+
+    const rand = generateRandomValues(value);
+    setRandomValues(rand);
+    setOriginalData(rand);
     setColor("lightBlue");
     setSorting(false);
   };
 
   const [numValues, setNumber] = useState(50);
   const [randomData, setRandomValues] = useState(generateRandomValues(50));
+  const [originalData, setOriginalData] = useState(randomData);
   const [progress, setProgress] = useState(0);
   const [speed, setSpeed] = useState(0.7);
   const [color, setColor] = useState("lightBlue");
   const [sorting, setSorting] = useState(false);
   const [sortMethod, setSortMethod] = useState(0);
   //0 is BubbleSort, 1 is MergeSort, 2 is SelectionSort, 3 is InsertionSort
+
+  const handleSortChange = (event, value) => {
+    setSortMethod(event.target.value);
+    if (sorting === true) {
+      setRandomValues(originalData);
+      setColor("lightBlue");
+      setSorting(false);
+      setProgress(0);
+    }
+  };
 
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -59,6 +69,7 @@ const App = () => {
         return [];
     }
   };
+
   return (
     <div>
       <SortDropDown handleChange={handleSortChange}></SortDropDown>

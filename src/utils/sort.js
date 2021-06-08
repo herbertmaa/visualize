@@ -1,7 +1,7 @@
 /* Different types of sorting methods */
 
-const bubbleSort = async (original) => {
-  let arr = [...original];
+const bubbleSort = (original) => {
+  let arr = JSON.parse(JSON.stringify(original));
   let sorted = false;
 
   let answers = [];
@@ -23,10 +23,70 @@ const bubbleSort = async (original) => {
   return answers;
 };
 
-const mergeSort = async (original) => {};
+const mergeSort = (original) => {
+  const mergeHelper = (arr, l, m, r, answers) => {
+    const n1 = m - l + 1;
+    const n2 = r - m;
 
-const insertionSort = async (original) => {
-  let arr = [...original];
+    // Create temp arrays
+    const L = [];
+    const R = [];
+
+    // Copy data to temp arrays L[] and R[]
+    for (let i = 0; i < n1; i++) L[i] = arr[l + i];
+    for (let j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+
+    let leftIndex = 0;
+    let rightIndex = 0;
+    let k = l;
+
+    console.log("Merging", n1, n2);
+    while (leftIndex < n1 && rightIndex < n2) {
+      if (L[leftIndex]["y"] < R[rightIndex]["y"]) {
+        arr[k]["y"] = L[leftIndex]["y"];
+        leftIndex++;
+      } else {
+        arr[k]["y"] = R[rightIndex]["y"];
+        rightIndex++;
+      }
+      k++;
+    }
+
+    while (leftIndex < n1) {
+      arr[k]["y"] = L[leftIndex]["y"];
+      leftIndex++;
+      k++;
+    }
+
+    while (rightIndex < n2) {
+      arr[k]["y"] = R[rightIndex]["y"];
+      rightIndex++;
+      k++;
+    }
+
+    console.log("Length of array", arr.length, k);
+    answers.push(JSON.parse(JSON.stringify(arr)));
+  };
+  const sorter = (arr, l, r, answers) => {
+    if (l >= r) {
+      return;
+    }
+    const m = l + parseInt((r - l) / 2);
+    sorter(arr, l, m, answers);
+    sorter(arr, m + 1, r, answers);
+    mergeHelper(arr, l, m, r, answers);
+  };
+
+  console.log("original", JSON.parse(JSON.stringify(original)));
+  let arr = JSON.parse(JSON.stringify(original));
+  let answers = [];
+
+  sorter(arr, 0, arr.length - 1, answers);
+  return answers;
+};
+
+const insertionSort = (original) => {
+  let arr = JSON.parse(JSON.stringify(original));
   let answers = [];
 
   for (let i = 1; i < arr.length; i++) {
@@ -45,8 +105,8 @@ const insertionSort = async (original) => {
   return answers;
 };
 
-const selectionSort = async (original) => {
-  let arr = [...original];
+const selectionSort = (original) => {
+  let arr = JSON.parse(JSON.stringify(original));
   let answers = [];
 
   let sortedIndex = 0;
