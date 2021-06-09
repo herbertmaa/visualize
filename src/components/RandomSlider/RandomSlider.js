@@ -50,7 +50,7 @@ const RandomSlider = ({ handleChange }) => {
   return (
     <div className="RandomSlider">
       <Typography id="discrete-slider-always" gutterBottom>
-        Generate some new values!
+        Generate some random values 🎲
       </Typography>
       <Slider
         defaultValue={50}

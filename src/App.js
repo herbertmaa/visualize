@@ -2,6 +2,11 @@ import Graph from "./components/Graphs";
 import RandomSlider from "./components/RandomSlider/RandomSlider";
 import React, { useState } from "react";
 import { Button } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
+import ResultsContainer from "./components/ResultsContainer/ResultsContainer";
+import Grid from "@material-ui/core/Grid";
+
 import {
   bubbleSort,
   mergeSort,
@@ -21,6 +26,13 @@ const App = () => {
     });
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
   const handleChange = (event, value) => {
     if (value === numValues) return;
     setNumber(value);
@@ -33,6 +45,31 @@ const App = () => {
     setSorting(false);
   };
 
+  const handleSortChange = (event, value) => {
+    setSortMethod(event.target.value);
+    if (sorting === true) {
+      setRandomValues(originalData);
+      setColor("lightBlue");
+      setSorting(false);
+      setProgress(0);
+      setOpen(false);
+    }
+  };
+
+  const getMethodName = (value) => {
+    switch (value) {
+      case 0:
+        return "Bubble Sort";
+      case 1:
+        return "Merge Sort";
+      case 2:
+        return "Selection Sort";
+      case 3:
+        return "Insertion Sort";
+      default:
+        return "Undefined";
+    }
+  };
   const [numValues, setNumber] = useState(50);
   const [randomData, setRandomValues] = useState(generateRandomValues(50));
   const [originalData, setOriginalData] = useState(randomData);
@@ -41,21 +78,14 @@ const App = () => {
   const [color, setColor] = useState("lightBlue");
   const [sorting, setSorting] = useState(false);
   const [sortMethod, setSortMethod] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [time, setTime] = useState(0);
+  const [thaResults, setResults] = useState([]);
   //0 is BubbleSort, 1 is MergeSort, 2 is SelectionSort, 3 is InsertionSort
-
-  const handleSortChange = (event, value) => {
-    setSortMethod(event.target.value);
-    if (sorting === true) {
-      setRandomValues(originalData);
-      setColor("lightBlue");
-      setSorting(false);
-      setProgress(0);
-    }
-  };
 
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
-  const callSortMethod = () => {
+  const callSortMethod = async () => {
     switch (sortMethod) {
       case 0:
         return bubbleSort(randomData);
@@ -71,36 +101,70 @@ const App = () => {
   };
 
   return (
-    <div>
-      <SortDropDown handleChange={handleSortChange}></SortDropDown>
-      <Graph color={color} key="graphData" data={randomData} />
-      <RandomSlider handleChange={handleChange} />
-      <Button
-        style={{ marginLeft: "50px" }}
-        variant="contained"
-        color="primary"
-        onClick={async () => {
-          if (sorting) return; // already sorting
-          setSorting(true);
-          const changes = await callSortMethod();
-          const percentageChange = 100 / changes.length;
-          for (let i = 0; i < changes.length; ++i) {
-            setRandomValues([...changes[i]]);
-            setTimeout(() => {
-              setProgress((prevProgress) => {
-                const newProgressValue = prevProgress + percentageChange;
-                if (newProgressValue >= 99.75) setColor("lightGreen");
-                return newProgressValue;
-              });
-            }, i * speed);
-            await timer(speed);
-          }
-        }}
-      >
-        Sort me!
-      </Button>
-      <LinearProgressLabel value={progress} progress={progress} />
-    </div>
+    <Grid container direction="row" justify="flex-start" alignItems="center">
+      <div style={{ backgroundColor: "lightYellow" }}>
+        <SortDropDown handleChange={handleSortChange}></SortDropDown>
+        <Graph color={color} key="graphData" data={randomData} />
+        <RandomSlider handleChange={handleChange} />
+        <Button
+          style={{ marginLeft: "50px" }}
+          variant="contained"
+          color="primary"
+          onClick={async () => {
+            if (sorting) return; // already sorting
+            setSorting(true);
+            const changes = await callSortMethod();
+            const percentageChange = 100 / changes.length;
+
+            const startTime = Date.now();
+            for (let i = 0; i < changes.length; ++i) {
+              setRandomValues([...changes[i]]);
+              setTimeout(() => {
+                setProgress((prevProgress) => {
+                  const newProgressValue = prevProgress + percentageChange;
+                  if (newProgressValue >= 99.75) {
+                    setColor("lightGreen");
+                    setOpen(true);
+                    console.log("Done sorting");
+                  }
+                  return newProgressValue;
+                });
+              }, i * speed);
+              await timer(speed);
+            }
+
+            const delta = Date.now() - startTime; // in milliseconds
+            setTime(delta);
+            setResults((prevArr) => {
+              return [
+                ...prevArr,
+                {
+                  method: getMethodName(sortMethod),
+                  time: delta,
+                  numElements: numValues,
+                },
+              ];
+            });
+          }}
+        >
+          Sort me!
+        </Button>
+        <LinearProgressLabel
+          style={{ marginBottom: "20px" }}
+          value={progress}
+          progress={progress}
+        />
+      </div>
+
+      <div style={{ backgroundColor: "lightBlue" }}>
+        <ResultsContainer children={thaResults} />
+      </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          Your input was sorted in {time} ms! 🚀
+        </Alert>
+      </Snackbar>
+    </Grid>
   );
 };
 
