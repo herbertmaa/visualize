@@ -80,7 +80,8 @@ const App = () => {
   const [sortMethod, setSortMethod] = useState(0);
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState(0);
-  const [thaResults, setResults] = useState([]);
+  const [results, setResults] = useState([]);
+  const [changeDisabled, setDisabled] = useState(false);
   //0 is BubbleSort, 1 is MergeSort, 2 is SelectionSort, 3 is InsertionSort
 
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -101,9 +102,18 @@ const App = () => {
   };
 
   return (
-    <Grid container direction="row" justify="flex-start" alignItems="center">
-      <div style={{ backgroundColor: "lightYellow" }}>
-        <SortDropDown handleChange={handleSortChange}></SortDropDown>
+    <Grid
+      container
+      direction="row"
+      justify="flex-start"
+      alignItems="center"
+      spacing={2}
+    >
+      <Grid style={{ marginLeft: "20px" }} item xs={5}>
+        <SortDropDown
+          isDisabled={changeDisabled}
+          handleChange={handleSortChange}
+        ></SortDropDown>
         <Graph color={color} key="graphData" data={randomData} />
         <RandomSlider handleChange={handleChange} />
         <Button
@@ -112,6 +122,7 @@ const App = () => {
           color="primary"
           onClick={async () => {
             if (sorting) return; // already sorting
+            setDisabled(true);
             setSorting(true);
             const changes = await callSortMethod();
             const percentageChange = 100 / changes.length;
@@ -135,6 +146,7 @@ const App = () => {
 
             const delta = Date.now() - startTime; // in milliseconds
             setTime(delta);
+            setDisabled(false);
             setResults((prevArr) => {
               return [
                 ...prevArr,
@@ -149,16 +161,12 @@ const App = () => {
         >
           Sort me!
         </Button>
-        <LinearProgressLabel
-          style={{ marginBottom: "20px" }}
-          value={progress}
-          progress={progress}
-        />
-      </div>
+        <LinearProgressLabel value={progress} progress={progress} />
+      </Grid>
 
-      <div style={{ backgroundColor: "lightBlue" }}>
-        <ResultsContainer children={thaResults} />
-      </div>
+      <Grid item xs={4}>
+        <ResultsContainer children={results} />
+      </Grid>
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success">
           Your input was sorted in {time} ms! 🚀

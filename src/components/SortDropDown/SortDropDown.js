@@ -3,9 +3,13 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 
-const SortDropDown = ({ handleChange }) => {
+const SortDropDown = ({ isDisabled, handleChange }) => {
   return (
-    <FormControl id="sort-form-control" style={{ margin: "50px" }}>
+    <FormControl
+      disabled={isDisabled}
+      id="sort-form-control"
+      style={{ margin: "50px" }}
+    >
       <InputLabel
         id="sort-form-label"
         style={{ position: "relative", color: "black", fontSize: "2rem" }}

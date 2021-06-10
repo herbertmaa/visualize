@@ -5,7 +5,7 @@ const LinearProgressLabel = ({ progress, value }) => {
   return (
     <div className="LinearProgressContainer">
       <LinearProgress
-        style={{ display: "inline-block", width: "45vw" }}
+        style={{ display: "inline-block", width: "35vw" }}
         variant="determinate"
         value={value}
       />

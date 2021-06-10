@@ -1,13 +1,27 @@
 import React from "react";
 
-const ResultsContainer = ({ children }) => {
-  if (children.length === 0) return <div> Sort something boyyy </div>;
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
+import "./ResultsContainer.scss";
 
-  console.log(children);
+const ResultsContainer = ({ children }) => {
+  if (children.length === 0)
+    return (
+      <div className="ResultsContainer">
+        Press "Sort Me" to start seeing your results!
+      </div>
+    );
+
   return (
-    <div>
+    <div className="ResultsContainer">
       {children.map((item) => (
-        <h1 key={item.time + "" + item.method}>{item.method}</h1>
+        <Chip
+          variant="outlined"
+          size="small"
+          avatar={<Avatar> {item.numElements}</Avatar>}
+          label={item.method + ": " + item.time + "ms"}
+          color="primary"
+        />
       ))}
     </div>
   );
